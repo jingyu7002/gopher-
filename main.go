@@ -43,6 +43,7 @@ func NewMap() Map {
 	}()
 	m.Close = func() {
 		close(done)
+		close(m.C)
 	}
 	return m
 }
@@ -58,7 +59,7 @@ func (m *Map) Get(key string) interface{} {
 	data := mapOperation{
 		action: 0,
 		key:    key,
-		result: make(chan interface{}, 1),
+		result: make(chan interface{}),
 	}
 	m.C <- &data
 	return <-data.result
